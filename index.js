@@ -1,8 +1,20 @@
 const express = require('express');
 const pool = require('./db');
+const taskRoutes = require('./routes/tasks');
+const authRoutes = require('./routes/auth');
+const requireAuth = require('./middleware/requireAuth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Middleware: parses incoming JSON request bodies into req.body
+app.use(express.json());
+
+// Auth routes are public — you need them to log in in the first place
+app.use('/auth', authRoutes);
+
+// Task routes now require a valid JWT — requireAuth runs before taskRoutes
+app.use('/tasks', requireAuth, taskRoutes);
 
 // A "route" tells Express: when a GET request hits "/", run this function
 app.get('/', (req, res) => {
