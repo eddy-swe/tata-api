@@ -1,8 +1,15 @@
 const express = require('express');
 const pool = require('./db');
+const taskRoutes = require('./routes/tasks');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Middleware: parses incoming JSON request bodies into req.body
+app.use(express.json());
+
+// Mount all /tasks routes from routes/tasks.js
+app.use('/tasks', taskRoutes);
 
 // A "route" tells Express: when a GET request hits "/", run this function
 app.get('/', (req, res) => {
